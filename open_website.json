@@ -1,0 +1,78 @@
+{
+    "case": "OpenWebsite",
+    "platform": "ios",
+    "test_scene1":{
+      "open_website":{
+          "steps":[
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button",
+                    "action": [
+                    "clear", {"sleep": "3"},
+                    {"send_keys":"xxx"}, {"text":"a"}, {"assert": {"$a": "alex"}}
+                  ]
+                },
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button3",
+                    "action": "click"
+                }
+            ]
+      },
+
+      "open_website2":{
+            "steps":[
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button4",
+                    "action": "click"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button5",
+                    "action": ["clear", {"send_key": "xxxx"}]
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button6",
+                    "action": "click"
+                }
+            ]
+        }
+    },
+
+  "test_scene2":{
+      "open_website":{
+          "steps":[
+              {
+                "id": "cn.ibona.t1_beta:id/start_button",
+                "action": "click"
+              },
+              {
+                "id": "cn.ibona.t1_beta:id/start_button2",
+                "action": [
+                  "clear", {"send_keys":"xxx"}
+                ]
+              },
+              {
+                "sleep": "3"
+              }
+            ]
+      },
+
+      "open_website2":{
+            "steps":[
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button4",
+                    "action": "click"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button5",
+                    "action": "clear",
+                    "send_key": "xxxx"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button6",
+                    "send_key": "xxxx",
+                    "action": "click"
+                }
+            ]
+        }
+    }
+
+}
