@@ -18,7 +18,7 @@ pip install -r requirements.txt
 
 ## 3.运行用例
 ### （1）参数说明
-```angular2html
+```bash
     parser.add_argument('--case-file', dest='case_file', help="case的json文件")
     parser.add_argument('--android-device', dest='android_device', help="android模拟器设备号，此项如果不输入，"
                                                                         + "脚本会自动按照desired-caps的platformVersion"
@@ -81,4 +81,118 @@ python run_cases.py
         "unicodeKeyboard":"True",
         "autoAcceptAlerts":"True",
         "connectHardwareKeyboard":"False"}
+```
+
+## 编写用例
+怎么编写用例
+```json
+{
+    "case": "OpenWebsite",    // 测试用例名
+    "platform": "ios",        // 用例指定的平台
+    "test_scene1":{           // 测试子用例，以test_开头
+      "open_website":{        // 子用例操作步骤名，目前没有使用，但后续会支持步骤复用的功能
+          "steps":[           // 子用例操作步骤，以list为载体，list的元素支持str跟map类型，目前支持的操作有clear，sleep，send_keys, swipe, click, assert, text操作
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button",
+                    "action": [
+                    "clear", {"sleep": "3"},
+                    {"send_keys":"xxx"}, {"text":"a"}, {"assert": {"$a": "alex"}}
+                  ]
+                },
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button3",
+                    "action": "click"
+                }
+            ]
+      },
+
+      "open_website2":{
+            "steps":[
+                {
+                    "wid": "cn.ibona.t1_beta:id/start_button4",
+                    "action": "click"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button5",
+                    "action": ["clear", {"send_key": "xxxx"}]
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button6",
+                    "action": "click"
+                }
+            ]
+        }
+    },
+
+  "test_scene2":{
+      "open_website":{
+          "steps":[
+              {
+                "id": "cn.ibona.t1_beta:id/start_button",
+                "action": "click"
+              },
+              {
+                "id": "cn.ibona.t1_beta:id/start_button2",
+                "action": [
+                  "clear", {"send_keys":"xxx"}
+                ]
+              },
+              {
+                "sleep": "3"
+              }
+            ]
+      },
+
+      "open_website2":{
+            "steps":[
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button4",
+                    "action": "click"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button5",
+                    "action": "clear",
+                    "send_key": "xxxx"
+                },
+                {
+                    "id": "cn.ibona.t1_beta:id/start_button6",
+                    "send_key": "xxxx",
+                    "action": "click"
+                }
+            ]
+        }
+    }
+
+}
+```
+用例转换结果：
+```python
+import time
+from cases.base import AndroidBaseTest
+
+class AndroidOpenWebsite(AndroidBaseTest):
+    def __init__(self):
+        super().__init__()
+
+    def test_scene1(self):
+        self.page_util.native2webview()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button').clear()
+        time.sleep(3)
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button').clear().send_keys("xxx")
+        a = self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button').text()
+        assert a == "alex"
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button3').click()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button4').click()
+        self.page_util.webview2native()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button5').clear()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button6').click()
+
+    def test_scene2(self):
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button').click()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button2').clear()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button2').clear().send_keys("xxx")
+        time.sleep(3)
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button4').click()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button5').clear()
+        self.page_util.find_element_by_id('cn.ibona.t1_beta:id/start_button6').click()
 ```
